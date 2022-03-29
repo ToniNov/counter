@@ -1,26 +1,45 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {PATH, RoutesList} from "./RoutesList";
+import {HashRouter, NavLink} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {RootReducerType} from "./components/redux/store";
+import {IncValueAC, initialStateType, resetValueAC, setMaxValueAC, setMinValueAC} from "./components/redux/reducers";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const dispatch = useDispatch();
+    const state = useSelector<RootReducerType, initialStateType>((store)=> store.counter);
+
+    const setMinLocal = (min: number) => {
+        dispatch(setMinValueAC(min))
+    };
+    const setMaxLocal = ( max: number) => {
+        dispatch(setMaxValueAC(max))
+    };
+
+    const setMinMax = (min: number, max: number) => {
+        dispatch(setMinValueAC(min))
+        dispatch(setMaxValueAC(max))
+    };
+    const incCount = () => {
+        dispatch(IncValueAC())
+    };
+
+    const resetCount = () => {
+        dispatch(resetValueAC())
+    };
+
+    return (
+        <div className="App">
+            <HashRouter>
+                <div>
+                    <NavLink to={PATH.counter1} className={({isActive})=> isActive ? 'linksActive' : 'links'}> First Counter </NavLink>
+                    <NavLink to={PATH.counter2} className={({isActive})=> isActive ? 'linksActive' : 'links'}> Second Counter </NavLink>
+                </div>
+                <RoutesList state={state} incCount={incCount} resetCount={resetCount} setMaxLocal={setMaxLocal} setMinLocal={setMinLocal} setMaxMin={setMinMax}/>
+            </HashRouter>
+        </div>
+    );
 }
 
 export default App;
